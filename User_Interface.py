@@ -1,10 +1,12 @@
 from PySide6.QtGui import QMovie, QKeyEvent, QFontDatabase, QKeySequence, QShortcut, QTextCursor
 from PySide6.QtWidgets import QMainWindow, QInputDialog, QFileDialog
 from PySide6.QtCore import Qt, QPoint, QSettings, QEventLoop
+from PySide6 import QtWidgets
 from logging.handlers import RotatingFileHandler
 from ARES_GUI import Ui_MainWindow
+from Music_Recommender import MusicRecommenderThread
+from PySide6.QtCore import QThread, Signal
 import logging
-import requests
 import os
 
 
@@ -13,6 +15,10 @@ class UserInterface(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.setWindowTitle("A.R.E.S. - Artist Recommendation and Exploration System")
+        
+        # iniitialize the logger
+        if not os.path.exists('Logs'):
+            os.makedirs('Logs')
         self.logger = logging.getLogger("logger")
         self.logger.setLevel(logging.DEBUG)
         handler = RotatingFileHandler(os.path.join(
@@ -22,49 +28,39 @@ class UserInterface(QMainWindow, Ui_MainWindow):
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
         
-        self.api_key = "6434733d6b68ed2572abb91ab1966564"
-        self.BASE_URL = 'https://ws.audioscrobbler.com/2.0/'
-        
+        self.testing_movie = QMovie(os.path.join('Assets', 'testing_gif.gif'))
+        self.testing_gif.setMovie(self.testing_movie)
+        self.testing_movie.start()
+        self.Enter_button.clicked.connect(self.send_request)
         self.logger.info("Initialization complete.")
-    def get_artist_from_track(self,track_name):
-        params = {
-            'method': 'track.search',
-            'track': track_name,
-            'api_key': self.api_key,
-            'format': 'json',
-            'limit': 1
-        }
-        response = requests.get(self.BASE_URL, params=params)
-        data = response.json()
         
-        try:
-            track = data['results']['trackmatches']['track'][0]
-            return track['artist']
-        except (KeyError, IndexError):
-            return None, None
+    def send_request(self):
+        self.logger.info("Send request button clicked.")
+        liked_track = self.User_input.text().strip()
+        if not liked_track:
+            self.logger.warning("No track entered.")
+            return
         
-    def get_similar_tracks(self,track_name, artist_name,  limit=5): # 
-        params = {
-            'method': 'track.getsimilar',
-            'track': track_name,
-            'artist': artist_name,
-            'api_key': self.api_key,
-            'format': 'json',
-            'limit': limit
-        }
-        response = requests.get(self.BASE_URL, params=params)
-        data = response.json()
-
-        if 'similartracks' not in data or 'track' not in data['similartracks']:
-            return []
-
-        tracks = data['similartracks']['track']
-        return [f"{track['name']} by {track['artist']['name']}" for track in tracks]
-
-        # Try it
-    '''song_name = input("Enter a song name to find recommendations: ")
-    artist_name = get_artist_from_track(song_name)
-    similar_tracks = get_similar_tracks(song_name, artist_name)
-    print(f"Tracks similar to {song_name} by {artist_name}:")
-    for t in similar_tracks:
-        print("-", t)'''
+        self.logger.info(f"User entered track: {liked_track}")
+        self.recommender_thread = MusicRecommenderThread(liked_track)
+        self.recommender_thread.finished.connect(self.display_recommendations)
+        self.recommender_thread.error.connect(self.display_error)
+        self.recommender_thread.start()
+   
+    def display_recommendations(self, liked_track, artist_name, recommendations):
+        self.logger.info("Displaying recommendations.")
+        self.Display.clear()
+        self.Display.setText(f"Because you liked {liked_track} by {artist_name} you might like:\n{recommendations}")
+        
+        
+    def display_error(self, error_message):
+        self.logger.error(f"Error occurred: {error_message}")
+        self.Display.clear()
+        self.Display.setText(f"Error: {error_message}")
+       
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    window = UserInterface()
+    window.show()
+    sys.exit(app.exec())
