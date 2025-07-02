@@ -1,19 +1,31 @@
 from PySide6.QtGui import QMovie, QKeyEvent, QFontDatabase, QKeySequence, QShortcut, QTextCursor
 from PySide6.QtWidgets import QMainWindow, QInputDialog, QFileDialog
 from PySide6.QtCore import Qt, QPoint, QSettings, QEventLoop
+from logging.handlers import RotatingFileHandler
 from ARES_GUI import Ui_MainWindow
 import logging
 import requests
+import os
+
+
 class UserInterface(QMainWindow, Ui_MainWindow):
-    def __init__(self, parent=None):
+    def __init__(self) -> None:
         super().__init__()
         self.setupUi(self)
         self.setWindowTitle("A.R.E.S. - Artist Recommendation and Exploration System")
-        
+        self.logger = logging.getLogger("logger")
+        self.logger.setLevel(logging.DEBUG)
+        handler = RotatingFileHandler(os.path.join(
+            'Logs', 'log.log'), maxBytes=100000, backupCount=5, encoding="utf-8")
+        formatter = logging.Formatter(
+            '%(asctime)s - %(levelname)s - %(message)s',"%Y-%m-%d %H:%M:%S")
+        handler.setFormatter(formatter)
+        self.logger.addHandler(handler)
         
         self.api_key = "6434733d6b68ed2572abb91ab1966564"
         self.BASE_URL = 'https://ws.audioscrobbler.com/2.0/'
-    
+        
+        self.logger.info("Initialization complete.")
     def get_artist_from_track(self,track_name):
         params = {
             'method': 'track.search',

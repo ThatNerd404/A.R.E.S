@@ -12,6 +12,7 @@ plasma coil to auspex sight. Initiate the Rite. Authenticate. Confirm. The Omnis
 from PySide6 import QtWidgets
 from User_Interface import UserInterface
 import sys
+
 def main():
     # This is the main function that will be executed when the script is run.
     app = QtWidgets.QApplication(sys.argv)
