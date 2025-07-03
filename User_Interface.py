@@ -42,7 +42,7 @@ class UserInterface(QMainWindow, Ui_MainWindow):
             return
         
         self.logger.info(f"User entered track: {liked_track}")
-        self.recommender_thread = MusicRecommenderThread(liked_track)
+        self.recommender_thread = MusicRecommenderThread(liked_track,5)
         self.recommender_thread.finished.connect(self.display_recommendations)
         self.recommender_thread.error.connect(self.display_error)
         self.recommender_thread.start()
