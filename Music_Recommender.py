@@ -48,8 +48,8 @@ class MusicRecommenderThread(QThread):
         try:
             track = data['results']['trackmatches']['track'][0]
             return track['artist']
-        except (KeyError, IndexError):
-            return None, None
+        except:
+            return None
     
     def get_similar_tracks(self,track_name, artist_name): # 
         params = {

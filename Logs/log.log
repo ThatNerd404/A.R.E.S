@@ -88,3 +88,23 @@
 2025-07-02 20:57:37 - INFO - Initialization complete.
 2025-07-02 20:58:16 - INFO - Send request button clicked.
 2025-07-02 20:58:16 - INFO - User entered track: just
+2025-07-02 20:59:11 - INFO - Initialization complete.
+2025-07-02 20:59:19 - INFO - Send request button clicked.
+2025-07-02 20:59:19 - INFO - User entered track: just
+2025-07-02 20:59:19 - ERROR - Error occurred: No similar tracks found.
+2025-07-02 20:59:25 - INFO - Send request button clicked.
+2025-07-02 20:59:25 - INFO - User entered track: creep
+2025-07-02 20:59:26 - INFO - Displaying recommendations.
+2025-07-02 21:01:09 - INFO - Initialization complete.
+2025-07-02 21:01:14 - INFO - Send request button clicked.
+2025-07-02 21:01:14 - INFO - User entered track: ppasdfasdfasdfqwefgsdfgb34
+2025-07-02 21:01:14 - ERROR - Error occurred: Artist not found for the given track.
+2025-07-02 21:01:26 - INFO - Send request button clicked.
+2025-07-02 21:01:26 - INFO - User entered track: asdfe4rsdf
+2025-07-02 21:01:26 - ERROR - Error occurred: Artist not found for the given track.
+2025-07-02 21:01:28 - INFO - Send request button clicked.
+2025-07-02 21:01:28 - INFO - User entered track: asdfe4rsdf
+2025-07-02 21:01:28 - ERROR - Error occurred: Artist not found for the given track.
+2025-07-02 21:01:29 - INFO - Send request button clicked.
+2025-07-02 21:01:29 - INFO - User entered track: asdfe4rsdf
+2025-07-02 21:01:29 - ERROR - Error occurred: Artist not found for the given track.
